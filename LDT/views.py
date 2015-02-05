@@ -16,51 +16,37 @@ hardwareHosts = './LDT/scripts/hardwareHosts.sh'
 ssh = 0
 conectado = False
 
-
-def login(request):
-	print 'Entro en login'
-
-	if request.method == 'GET':
-		if request.user.is_authenticated():
-			return render(request,'index.html',{'usuario': request.user.username,
-			"consulta1": consultaSSH(usoDisco),"consulta2": consultaSSH(hardwareHosts)})
-
-	if request.method == 'POST':
-		print 'Entro en post'
-		formulario = AuthenticationForm(request.POST)
-		if formulario.is_valid :
-			usuario = request.POST['username']
-			contrasenia = request.POST['password']
-			user = authenticate(username=usuario, password=contrasenia)
-			if user is not None:
-				if user.is_active:
-					auth_login(request, user)
-					return render(request,'index.html',{'usuario': request.user.username,
-					"consulta1": consultaSSH(usoDisco),"consulta2": consultaSSH(hardwareHosts)})
-
-	return render(request,'login.html')
-
 def logout(request):
-	global ssh
-	print 'Entro en logout'
+	#global ssh
 	auth_logout(request)
-	ssh.close()
-	return HttpResponseRedirect('/LDT/login')
-
+	#ssh.close()
+	print "Entra en logout"
+	return HttpResponseRedirect('/')
 
 def index(request):
-	if request.user.is_authenticated():
-		print 'Entro en index'
-		global usoDisco
-		if request.method == 'GET':
-			print 'metodo GET'
-			if request.user.is_authenticated():
-				print 'El usuario esta autenticado, devuelvo index'
-				return render(request,'index.html',{'usuario': request.user.username,
-				"consulta1": consultaSSH(usoDisco),"consulta2": consultaSSH(hardwareHosts)})
-	else:
-		print 'El usuario no esta autenticado, devuelvo login'
-		return render(request,'login.html')
+	if request.method == 'GET':
+		if request.user.is_authenticated():
+			print "!!!!!"
+			return render(request,'index.html',{'usuario': request.user.username})
+
+	if request.method == 'POST':
+		print "Llamada a POST"
+		if request.user.is_authenticated():
+			auth_logout(request)
+			return render(request,'index.html')
+
+		else:
+			formulario = AuthenticationForm(request.POST)
+			if formulario.is_valid:
+				usuario = request.POST['username']
+				passw = request.POST['password']
+				user = authenticate(username=usuario, password=passw)
+				if user is not None:
+					if user.is_active:
+						auth_login(request, user)
+						return render(request,'index.html',{'usuario': request.user.username})
+
+	return render(request,'index.html')
 
 def conectarSSH():
 	global ssh,conectado
@@ -79,8 +65,5 @@ def consultaSSH(comando):
 			conectarSSH()
 
 	(sshin, sshout, ssherr) = ssh.exec_command(comando)
-	print 'Realizo consulta ssh, comando:'
-	print comando
 	salida = sshout.read()
-	print salida
 	return salida

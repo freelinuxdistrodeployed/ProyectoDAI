@@ -35,10 +35,32 @@
           <a class="navbar-brand">LDT</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-          <h1 style="text-align:right">Bienvenido {{usuario}}
-          <form class="navbar-form navbar-right">
-            <a class="btn btn-success" href="logout/">Salir</a>
-          </form>
+          <h1 style="text-align:right">
+            {% if usuario %}
+              <div class="form-group">
+                <div class="col-sm-12 controls">
+                  Bienvenido {{usuario}}
+                  <button id="btn" class="btn btn-danger">Salir</button>
+                </div>
+              </div>
+            {% else %}
+            <form id="AuthenticationForm" class="form-inline" method="post" role="form">
+              {% csrf_token %}
+              <div style="margin-bottom: 25px" class="input-group">
+                <input id="login_username" type="text" class="form-control" name="username" value="" placeholder="usuario">
+              </div>
+
+              <div style="margin-bottom: 25px" class="input-group">
+                <input id="login_password" type="password" class="form-control" name="password" placeholder="contraseña">
+              </div>
+
+              <div style="margin-top:10px" class="form-group">
+                <div class="col-sm-12 controls">
+                  <button id="btn-login" class="btn btn-success">Entrar</button>
+                </div>
+              </div>
+            </form>
+            {% endif %}
         </h1>
         </div><!--/.navbar-collapse -->
       </div>
@@ -52,7 +74,7 @@
         <p><a class="btn btn-primary btn-lg" role="button">Learn more »</a></p>
       </div>
     </div>
-
+    {% if usuario %}
     <div class="container">
       <!-- Example row of columns -->
       <div class="row">
@@ -79,7 +101,7 @@
         <p>© Company 2014</p>
       </footer>
     </div> <!-- /container -->
-
+    {% endif %}
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
