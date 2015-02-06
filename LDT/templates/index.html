@@ -17,7 +17,37 @@
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="./Jumbotron Template for Bootstrap_files/ie-emulation-modes-warning.js"></script>
+    <script src="http://getbootstrap.com/assets/js/ie-emulation-modes-warning.js"></script>
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+
+        var data1 = google.visualization.arrayToDataTable([
+          ['Servidor', 'Uso de discos'],
+          ['Espacio Libre', {{discoLibre}}],
+          ['Espacio Usado', {{discoUsado}}]
+        ]);
+
+        var data2 = google.visualization.arrayToDataTable([
+          ['Servidor', 'Uso de Ram'],
+          ['Espacio Libre', {{ramLibre}}],
+          ['Espacio Usado',{{ramUsada}}]
+         ]);
+
+        var options = {
+          title: ''
+        };
+
+        var chart1 = new google.visualization.PieChart(document.getElementById('piechart1'));
+        var chart2 = new google.visualization.PieChart(document.getElementById('piechart2'));
+
+        chart1.draw(data1, options);
+        chart2.draw(data2, options);
+      }
+    </script>
 
   </head>
 
@@ -37,14 +67,12 @@
         <div id="navbar" class="navbar-collapse collapse">
           <h1 style="text-align:right">
             {% if usuario %}
-              <div class="form-group">
-                <div class="col-sm-12 controls">
+              <div style="margin-bottom: 25px">
                   Bienvenido {{usuario}}
                   <form action="" method="post">
                     {% csrf_token %}
                     <button id="btn" class="btn btn-danger">Salir</button>
                   </form>
-                </div>
               </div>
             {% else %}
             <form id="AuthenticationForm" class="form-inline" method="post" role="form">
@@ -57,7 +85,7 @@
                 <input id="login_password" type="password" class="form-control" name="password" placeholder="contraseña">
               </div>
 
-              <div style="margin-top:10px" class="form-group">
+              <div style="margin-bottom: 25px" class="form-group">
                 <div class="col-sm-12 controls">
                   <button id="btn-login" class="btn btn-success">Entrar</button>
                 </div>
@@ -68,51 +96,64 @@
         </div><!--/.navbar-collapse -->
       </div>
     </nav>
-
+    {% if usuario %}
+    <div class="jumbotron" style="padding-top:70px">
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Uso disco duro</h2>
+          <div id="piechart1" style="width: 320px; height: 320px;"></div>
+          <p>Espacio libre: {{discoLibre}} <br>
+            Espacio usado: {{discoUsado}}
+          </p>
+          <!--<p><a class="btn btn-default" role="button">View details »</a></p>-->
+        </div>
+        <div class="col-md-4">
+          <h2>Uso Memoria Ram</h2>
+          <div id="piechart2" style="width: 320px; height: 320px;"></div>
+          <p>Memoria Ram libre: {{ramLibre}} <br>
+            Memoria Ram usada: {{ramUsada}}
+          </p>
+          <!--<p><a class="btn btn-default" role="button">View details »</a></p>-->
+       </div>
+        <div class="col-md-4">
+          <h2>Hardware</h2>
+          <p>{{hardwareInfo}}</p>
+          <!--<p><a class="btn btn-default" role="button">View details »</a></p>-->
+        </div>
+      </div>
+    </div> <!-- /container -->
+    </div>
+    {% else %}
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
       <div class="container">
         <h1>LDT</h1>
         <p>Linux Deployed Tool</p>
-        <p><a class="btn btn-primary btn-lg" role="button">Learn more »</a></p>
       </div>
     </div>
-    {% if usuario %}
-    <div class="container">
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="col-md-4">
-          <h2>Uso disco hosts</h2>
-          <p>{{consulta1}}</p>
-          <p><a class="btn btn-default" role="button">View details »</a></p>
-        </div>
-        <div class="col-md-4">
-          <h2>Hardware hosts</h2>
-          <p>{{consulta2}}</p>
-          <p><a class="btn btn-default" role="button">View details »</a></p>
-       </div>
-        <div class="col-md-4">
-          <h2>Otra consulta</h2>
-          <p></p>
-          <p><a class="btn btn-default" role="button">View details »</a></p>
-        </div>
-      </div>
-
-      <hr>
-
-      <footer>
-        <p>© Company 2014</p>
-      </footer>
-    </div> <!-- /container -->
     {% endif %}
+
+    <hr>
+
+    <footer>
+      <p style="padding-left: 1%">
+        © LDT 2015
+        <br> <br>
+        Rubén Adrados Bretón <br>
+        Mario Ortega Aguayo <br>
+        Juan Antonio Moraleda Ocón
+      </p>
+    </footer>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="./Jumbotron Template for Bootstrap_files/jquery.min.js"></script>
-    <script src="./Jumbotron Template for Bootstrap_files/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="./Jumbotron Template for Bootstrap_files/ie10-viewport-bug-workaround.js"></script>
+    <script src="http://getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
 
 
 </body></html>
