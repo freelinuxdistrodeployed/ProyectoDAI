@@ -16,12 +16,22 @@ conectado = False
 def index(request):
 	if request.method == 'GET':
 		if request.user.is_authenticated():
-			usoDisco = [40,60] #consultaSSH('./usoDiscoHosts.sh')
-			usoRam = [70,30] #consultaSSH('./usoRamHosts.sh')
+			usoDisco = consultaSSH('./usoDiscoHosts.sh')
+			usoDisco = usoDisco.split( )
+			usoDisco[1] = int(usoDisco[1]) - int(usoDisco[0])
+			usoDisco[0] = int(usoDisco[0])/1024
+			usoDisco[1] = int(usoDisco[1])/1024
+			usoRam = consultaSSH('./usoRamHosts.sh')
+			usoRam = usoRam.split( )
+			usoRam[1] = int(usoRam[1]) - int(usoRam[0])
+			usoRam[0] = int(usoRam[0])/1024
+			usoRam[1] = int(usoRam[1])/1024
 			hardware = consultaSSH('./consultaHardware.sh')
+			hardware = hardware.split('\n')
 			return render(request,'index.html',{'usuario': request.user.username,
-			'discoLibre': usoDisco[0],'discoUsado': usoDisco[1] ,
-			'ramLibre': usoRam[0],'ramUsada': usoRam[1],'hardwareInfo': hardware})
+			'discoUsado': usoDisco[0],'discoLibre': usoDisco[1] ,
+			'ramLibre': usoRam[0],'ramUsada': usoRam[1],
+			'modelName': hardware[0],'MHz': hardware[1],'cache': hardware[2]})
 
 	if request.method == 'POST':
 		if request.user.is_authenticated():
@@ -37,12 +47,22 @@ def index(request):
 				if user is not None:
 					if user.is_active:
 						auth_login(request, user)
-						usoDisco = [40,60] #consultaSSH('./usoDiscoHosts.sh')
-						usoRam = [70,30] #consultaSSH('./usoRamHosts.sh')
+						usoDisco = consultaSSH('./usoDiscoHosts.sh')
+						usoDisco = usoDisco.split( )
+						usoDisco[1] = int(usoDisco[1]) - int(usoDisco[0])
+						usoDisco[0] = int(usoDisco[0])/1024
+						usoDisco[1] = int(usoDisco[1])/1024
+						usoRam = consultaSSH('./usoRamHosts.sh')
+						usoRam = usoRam.split( )
+						usoRam[1] = int(usoRam[1]) - int(usoRam[0])
+						usoRam[0] = int(usoRam[0])/1024
+						usoRam[1] = int(usoRam[1])/1024
 						hardware = consultaSSH('./consultaHardware.sh')
+						hardware = hardware.split('\n')
 						return render(request,'index.html',{'usuario': request.user.username,
-						'discoLibre': usoDisco[0],'discoUsado': usoDisco[1] ,
-						'ramLibre': usoRam[0],'ramUsada': usoRam[1],'hardwareInfo': hardware})
+						'discoUsado': usoDisco[0],'discoLibre': usoDisco[1] ,
+						'ramLibre': usoRam[0],'ramUsada': usoRam[1],
+						'modelName': hardware[0],'MHz': hardware[1],'cache': hardware[2]})
 
 	return render(request,'index.html')
 

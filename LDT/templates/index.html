@@ -26,15 +26,15 @@
       function drawChart() {
 
         var data1 = google.visualization.arrayToDataTable([
-          ['Servidor', 'Uso de discos'],
-          ['Espacio Libre', {{discoLibre}}],
-          ['Espacio Usado', {{discoUsado}}]
+          ['Servidor', 'Uso de disco duro'],
+          ['MB libres', {{discoLibre}}],
+          ['MB Usados', {{discoUsado}}]
         ]);
 
         var data2 = google.visualization.arrayToDataTable([
           ['Servidor', 'Uso de Ram'],
-          ['Espacio Libre', {{ramLibre}}],
-          ['Espacio Usado',{{ramUsada}}]
+          ['MB libres', {{ramLibre}}],
+          ['MB Usados',{{ramUsada}}]
          ]);
 
         var options = {
@@ -49,6 +49,45 @@
       }
     </script>
 
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["gauge"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Memory', 80],
+          ['CPU', 55],
+          ['Network', 68]
+        ]);
+
+        var options = {
+          width: 400, height: 120,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+
+        setInterval(function() {
+          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 13000);
+        setInterval(function() {
+          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 5000);
+        setInterval(function() {
+          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
+          chart.draw(data, options);
+        }, 26000);
+      }
+    </script>
+
+
   </head>
 
   <body>
@@ -62,13 +101,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand">LDT</a>
+          <a class="navbar-brand" style="color: white">LDT</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <h1 style="text-align:right">
             {% if usuario %}
               <div style="margin-bottom: 25px">
-                  Bienvenido {{usuario}}
+                  <p style="color: white ; font-size: 25px"> Bienvenido {{usuario}} </p>
                   <form action="" method="post">
                     {% csrf_token %}
                     <button id="btn" class="btn btn-danger">Salir</button>
@@ -104,33 +143,36 @@
         <div class="col-md-4">
           <h2>Uso disco duro</h2>
           <div id="piechart1" style="width: 320px; height: 320px;"></div>
-          <p>Espacio libre: {{discoLibre}} <br>
-            Espacio usado: {{discoUsado}}
+          <p>Disco duro usado: {{discoUsado}} MB<br>
+            Disco duro libre: {{discoLibre}} MB
           </p>
           <!--<p><a class="btn btn-default" role="button">View details »</a></p>-->
         </div>
         <div class="col-md-4">
           <h2>Uso Memoria Ram</h2>
           <div id="piechart2" style="width: 320px; height: 320px;"></div>
-          <p>Memoria Ram libre: {{ramLibre}} <br>
-            Memoria Ram usada: {{ramUsada}}
+          <p>Memoria Ram usada: {{ramUsada}} MB<br>
+            Memoria Ram libre: {{ramLibre}} MB
           </p>
-          <!--<p><a class="btn btn-default" role="button">View details »</a></p>-->
        </div>
         <div class="col-md-4">
           <h2>Hardware</h2>
-          <p>{{hardwareInfo}}</p>
-          <!--<p><a class="btn btn-default" role="button">View details »</a></p>-->
+          <div id="chart_div" style="width: 400px; height: 120px;"></div>
+          <h4>{{modelName}} <br><br> {{MHz}} <br><br> {{cache}} </h4>
         </div>
       </div>
-    </div> <!-- /container -->
+    </div>
     </div>
     {% else %}
-    <!-- Main jumbotron for a primary marketing message or call to action -->
+
     <div class="jumbotron">
       <div class="container">
         <h1>LDT</h1>
-        <p>Linux Deployed Tool</p>
+        <h2>Linux Deployed Tool</h2>
+        <h3>Sistema de control y mantenimiento remoto de equipos con S.O. Linux.</h3> <br> <br>
+        Rubén Adrados Bretón <br>
+        Mario Ortega Aguayo <br>
+        Juan Antonio Moraleda Ocón
       </div>
     </div>
     {% endif %}
@@ -140,10 +182,6 @@
     <footer>
       <p style="padding-left: 1%">
         © LDT 2015
-        <br> <br>
-        Rubén Adrados Bretón <br>
-        Mario Ortega Aguayo <br>
-        Juan Antonio Moraleda Ocón
       </p>
     </footer>
 
